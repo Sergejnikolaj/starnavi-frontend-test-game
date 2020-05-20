@@ -1,14 +1,19 @@
+html {
+  background-image: url(https://image.freepik.com/free-vector/bright-background-with-dots_1055-3132.jpg);
+  background-size: cover;
+}
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 body {
@@ -16,10 +21,28 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
+.header-wrapper {
+  width: 70%;
+}
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
+.list {
+  padding-top: 11px !important;
+}
+.list h3 {
+  text-align: center;
+  border-bottom: 1px solid silver;
+}
+.board-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
 .board-row {
   max-width: 340px;
 }
@@ -34,6 +57,10 @@ ol, ul {
 
 .hard-board {
   max-width: 1020px;
+}
+
+.game-mode {
+  min-width: 170px !important;
 }
 
 .board-row:after {
@@ -89,4 +116,11 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
+}
+.alert {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 30px;
+  font-size: 2em;
 }

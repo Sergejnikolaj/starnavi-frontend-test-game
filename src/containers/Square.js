@@ -1,53 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   changeFieldsArray,
-  setGameFields,
-  getRandomElFromArr,
   increaseScore,
+  setGamesState,
+  setGameFields,
 } from "../actions/gameFields";
 import "../index.css";
-console.log("SSS changeFieldsArray ", changeFieldsArray);
 
 export const Square = (props) => {
   const [flag, setFlag] = useState(null);
   const [inGame, toggleInGame] = useState(true);
-  const [clicked, toggleClicked] = useState(false);
   const randInd = useSelector((state) => state.freeFields.activeBlock);
-  const usedFields = useSelector((state) => state.freeFields.usedFields);
+  const gameOver = useSelector((state) => state.freeFields.gameOver);
+  const userScore = useSelector((state) => state.freeFields.userScore);
+  const compScore = useSelector((state) => state.freeFields.compScore);
+  const initLength = useSelector((state) => state.freeFields.initFieldsLength);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    
-    if (props.runGame && props.data === randInd && inGame) {
+    if (gameOver === false && props.data === randInd && inGame) {
       setFlag(true);
 
       dispatch(increaseScore("user"));
-    } else if (props.runGame && props.data !== randInd && inGame) {
+    } else if (gameOver === false && props.data !== randInd && inGame) {
       setFlag(false);
 
       dispatch(increaseScore("comp"));
     }
-	toggleClicked(true);
-    props.runGame && toggleInGame(false);
+    gameOver === false && toggleInGame(false);
 
-    props.runGame && dispatch(changeFieldsArray(props.data));
+    gameOver === false && dispatch(changeFieldsArray(props.data));
+    const gameScore = initLength / 2;
+    const scoreToWin = Math.floor(gameScore);
+    if (userScore === scoreToWin || compScore === scoreToWin) {
+      let arr = [];
+      dispatch(setGameFields(arr));
+      dispatch(setGamesState(true));
+    }
   };
-  console.log('XXX props.data ',props.data);
-  console.log('XXX randInd ',randInd);
-  console.log('XXX clicked ',clicked);
-  console.log('XXX usedFields includes ',usedFields.includes(randInd));
-  //usedFields.includes(randInd) === true && alert(randInd);
   return (
     <button
       className={`square ${
         props.data === randInd
-		  ? "blue"
-		  //: usedFields.includes(randInd) === true && clicked === false
-		  //? "red"
-		  //: usedFields.includes(randInd) === false
-		  //? "green"
-		  //: ""
+          ? "blue"
           : flag === true
           ? "green"
           : flag === false

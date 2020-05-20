@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 import { Square } from "./Square";
+import { Alert } from "../components/Alert";
 import {
-  changeFieldsArray,
-  setGameFields,
+  setInitFields,
   getRandomElFromArr,
-  increaseScore,
+  setGamersName,
+  setGamesState,
 } from "../actions/gameFields";
 import "../index.css";
-console.log("SSS changeFieldsArray ", changeFieldsArray);
 
 export const Board = (props) => {
   const [arrFields, setFields] = useState(null);
   const [settings, setSettings] = useState(null);
-  const [selectValue, setSelectValue] = useState(null);
   const [gameMode, setGameMode] = useState(null);
-  const [randEl, getRandEl] = useState(null);
-  const [isRun, setRunGame] = useState(false);
-  const [activeSq, toggleSquare] = useState(true);
   const store = useSelector((state) => state);
   const freeFields = useSelector((state) => state.freeFields.freeFields);
-  
+  const gamersName = useSelector((state) => state.freeFields.gamersName);
+  const gameOver = useSelector((state) => state.freeFields.gameOver);
+  const compScore = useSelector((state) => state.freeFields.compScore);
+  const userScore = useSelector((state) => state.freeFields.userScore);
+  const initLength = useSelector((state) => state.freeFields.initFieldsLength);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,37 +36,28 @@ export const Board = (props) => {
     fetch(url)
       .then((response) => response.json())
       .then((result) => {
-        const blockQty = result.easyMode.field * result.easyMode.field;
-        let arr = [];
-        arr.length = blockQty;
-        for (let i = 0; i < arr.length; i++) {
-          arr[i] = i;
-        }
-        dispatch(setGameFields(arr));
-        setFields(arr);
         setSettings(result);
       })
 
       .catch((e) => console.log(e));
   }, []);
 
-  //const runGame = (callback) => {
-	const runGame = () => {
-    console.log("%%% runGame freeFields ", freeFields);
-    setRunGame(true);
-
+  const runGame = () => {
+    dispatch(setGamesState(false));
     const timerID = setInterval(
       () => dispatch(getRandomElFromArr(freeFields)),
       1000
     );
-    return function cleanup() {
-	  clearInterval(timerID);
-	  //callback();
-    };
+    // return function cleanup() {
+    // clearInterval(timerID);
+    // //callback();
+    // };
   };
 
+  const onChangeInput = (e) => {
+    dispatch(setGamersName(e.target.value));
+  };
   const onChangeSelect = (e) => {
-    setSelectValue(e.target.value);
     setGameMode(e.target.value);
     const blocksQty =
       e.target.value === "easyMode"
@@ -74,41 +72,71 @@ export const Board = (props) => {
       arr[i] = i;
     }
     setFields(arr);
+    dispatch(setInitFields(arr));
   };
 
-  console.log("FFF BOARD store =  ", store);
-  console.log("FFF BOARD activeSq =  ", activeSq);
+  const hasScores = userScore > 0 || compScore > 0;
+  const gameScore = initLength / 2;
   return (
-    <div>
-      <div className="status">ZZZ</div>
-      {arrFields !== null && <button onClick={() => runGame()}>Play</button>}
-      <div
-        className={`"board-row" ${
-          gameMode === "normalMode"
-            ? "normal-board"
-            : gameMode === "hardMode"
-            ? "hard-board"
-            : "easy-board"
-        }`}
-      >
-        {arrFields !== null &&
-          arrFields.map(function (el, ind) {
-            return (
-              <Square data={el} key={ind} randInd={randEl} runGame={isRun} activeSq={activeSq} />
-            );
-          })}
-        {
-          <select
-            value={selectValue}
-            onChange={onChangeSelect}
-            className="form-control"
+    <div className="header-wrapper">
+      <div className="header">
+        {gameOver === true && hasScores === false && (
+          <FormControl className="game-mode">
+            <InputLabel>PICK GAME MODE</InputLabel>
+            <Select value={""} onChange={onChangeSelect}>
+              {settings &&
+                Object.keys(settings).map((el, ind) => {
+                  return (
+                    <MenuItem key={ind} value={el}>
+                      {el}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </FormControl>
+        )}
+        {gameOver === true && arrFields !== null && hasScores === false && (
+          <div style={{ padding: "0px 30px" }}>
+            <TextField onChange={onChangeInput} label="Enter your name" />
+          </div>
+        )}
+        {gameOver === true && gamersName.length > 1 && hasScores === false && (
+          <Button variant="contained" color="primary" onClick={() => runGame()}>
+            Play
+          </Button>
+        )}
+        {gameOver === true && hasScores === true && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => document.location.reload(true)}
           >
-            <option value="First">Pick Game mode</option>
-            <option value={settings && Object.keys(settings)[0]}>Easy</option>
-            <option value={settings && Object.keys(settings)[1]}>medium</option>
-            <option value={settings && Object.keys(settings)[2]}>Hard</option>
-          </select>
-        }
+            Play Again
+          </Button>
+        )}
+      </div>
+      <div>
+        {userScore > gameScore ? (
+          <Alert data={gamersName} />
+        ) : compScore > gameScore ? (
+          <Alert data={"Computer"} />
+        ) : null}
+      </div>
+      <div className="board-wrapper">
+        <div
+          className={`"board-row" ${
+            gameMode === "normalMode"
+              ? "normal-board"
+              : gameMode === "hardMode"
+              ? "hard-board"
+              : "easy-board"
+          }`}
+        >
+          {arrFields !== null &&
+            arrFields.map(function (el, ind) {
+              return <Square data={el} key={ind} />;
+            })}
+        </div>
       </div>
     </div>
   );
