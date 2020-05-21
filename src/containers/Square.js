@@ -5,6 +5,7 @@ import {
   increaseScore,
   setGamesState,
   setGameFields,
+  setLeaderBoard,
 } from "../actions/gameFields";
 import "../index.css";
 
@@ -16,25 +17,66 @@ export const Square = (props) => {
   const userScore = useSelector((state) => state.freeFields.userScore);
   const compScore = useSelector((state) => state.freeFields.compScore);
   const initLength = useSelector((state) => state.freeFields.initFieldsLength);
+  const leaderBoard = useSelector((state) => state.freeFields.leaderBoard);
+  const gamersName = useSelector((state) => state.freeFields.gamersName);
   const dispatch = useDispatch();
 
+  const { data } = props;
+
   const handleClick = () => {
-    if (gameOver === false && props.data === randInd && inGame) {
+    const gameScore = initLength / 2;
+    const scoreToWin = Math.floor(gameScore);
+
+    if (gameOver === false && data === randInd && inGame) {
       setFlag(true);
 
       dispatch(increaseScore("user"));
-    } else if (gameOver === false && props.data !== randInd && inGame) {
+    } else if (gameOver === false && data !== randInd && inGame) {
       setFlag(false);
 
       dispatch(increaseScore("comp"));
     }
     gameOver === false && toggleInGame(false);
+    gameOver === false && dispatch(changeFieldsArray(data));
 
-    gameOver === false && dispatch(changeFieldsArray(props.data));
-    const gameScore = initLength / 2;
-    const scoreToWin = Math.floor(gameScore);
     if (userScore === scoreToWin || compScore === scoreToWin) {
       let arr = [];
+      const nextLeaderBoard = [...leaderBoard];
+      const id = Math.random();
+      const winner = userScore === scoreToWin ? gamersName : "Computer";
+      const dateObj = new Date();
+      const hours =
+        dateObj.getHours() < 10 ? `0${dateObj.getHours()}` : dateObj.getHours();
+      const minutes =
+        dateObj.getMinutes() < 10
+          ? `0${dateObj.getMinutes()}`
+          : dateObj.getMinutes();
+      const day = dateObj.getDate();
+      const year = dateObj.getFullYear();
+      const output = ` ${hours}:${minutes}; ${day} May ${year}`;
+      const result = { id: id, winner: winner, date: output };
+      const url = "https://starnavi-frontend-test-task.herokuapp.com/winners";
+
+      nextLeaderBoard.push(result);
+
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result),
+      };
+      fetch(url, requestOptions)
+        .then(async (response) => {
+          const data = await response.json();
+          dispatch(setLeaderBoard(nextLeaderBoard));
+          if (!response.ok) {
+            const error = (data && data.message) || response.status;
+            return Promise.reject(error);
+          }
+        })
+        .catch((error) => {
+          console.error("There was an error POST request!", error);
+        });
+
       dispatch(setGameFields(arr));
       dispatch(setGamesState(true));
     }
@@ -42,7 +84,7 @@ export const Square = (props) => {
   return (
     <button
       className={`square ${
-        props.data === randInd
+        data === randInd
           ? "blue"
           : flag === true
           ? "green"
@@ -52,7 +94,7 @@ export const Square = (props) => {
       }`}
       onClick={() => handleClick()}
     >
-      {props.data}
+      {data}
     </button>
   );
 };

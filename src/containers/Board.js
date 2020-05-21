@@ -16,37 +16,47 @@ import {
 } from "../actions/gameFields";
 import "../index.css";
 
-export const Board = (props) => {
+export const Board = () => {
   const [arrFields, setFields] = useState(null);
   const [settings, setSettings] = useState(null);
   const [gameMode, setGameMode] = useState(null);
-  const store = useSelector((state) => state);
+  const [selectVal, setSelectVal] = useState(null);
   const freeFields = useSelector((state) => state.freeFields.freeFields);
   const gamersName = useSelector((state) => state.freeFields.gamersName);
   const gameOver = useSelector((state) => state.freeFields.gameOver);
   const compScore = useSelector((state) => state.freeFields.compScore);
   const userScore = useSelector((state) => state.freeFields.userScore);
   const initLength = useSelector((state) => state.freeFields.initFieldsLength);
+  const hasScores = userScore > 0 || compScore > 0;
+  const gameScore = initLength / 2;
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const url =
       "https://starnavi-frontend-test-task.herokuapp.com/game-settings";
-    fetch(url)
-      .then((response) => response.json())
-      .then((result) => {
-        setSettings(result);
-      })
 
-      .catch((e) => console.log(e));
+    fetch(url)
+      .then(async (response) => {
+        const data = await response.json();
+        setSettings(data);
+        if (!response.ok) {
+          const error = (data && data.message) || response.statusText;
+          return Promise.reject(error);
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error GET request !", error);
+      });
   }, []);
 
   const runGame = () => {
     dispatch(setGamesState(false));
+    const delay =
+      gameMode === "easyMode" ? 2000 : gameMode === "normalMode" ? 1000 : 900;
     const timerID = setInterval(
       () => dispatch(getRandomElFromArr(freeFields)),
-      1000
+      delay
     );
     // return function cleanup() {
     // clearInterval(timerID);
@@ -72,18 +82,17 @@ export const Board = (props) => {
       arr[i] = i;
     }
     setFields(arr);
+    setSelectVal(e.target.value);
     dispatch(setInitFields(arr));
   };
 
-  const hasScores = userScore > 0 || compScore > 0;
-  const gameScore = initLength / 2;
   return (
     <div className="header-wrapper">
       <div className="header">
         {gameOver === true && hasScores === false && (
           <FormControl className="game-mode">
-            <InputLabel>PICK GAME MODE</InputLabel>
-            <Select value={""} onChange={onChangeSelect}>
+            <InputLabel>{selectVal === null && "PICK GAME MODE"}</InputLabel>
+            <Select value={selectVal} onChange={onChangeSelect}>
               {settings &&
                 Object.keys(settings).map((el, ind) => {
                   return (
