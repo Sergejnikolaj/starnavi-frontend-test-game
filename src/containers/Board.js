@@ -92,7 +92,7 @@ export const Board = () => {
         {gameOver === true && hasScores === false && (
           <FormControl className="game-mode">
             <InputLabel>{selectVal === null && "PICK GAME MODE"}</InputLabel>
-            <Select value={selectVal} onChange={onChangeSelect}>
+            <Select value={selectVal || ""} onChange={onChangeSelect}>
               {settings &&
                 Object.keys(settings).map((el, ind) => {
                   return (
@@ -105,7 +105,7 @@ export const Board = () => {
           </FormControl>
         )}
         {gameOver === true && arrFields !== null && hasScores === false && (
-          <div style={{ padding: "0px 30px" }}>
+          <div className="name-input">
             <TextField onChange={onChangeInput} label="Enter your name" />
           </div>
         )}

@@ -35,7 +35,9 @@ body {
 }
 .list h3 {
   text-align: center;
-  border-bottom: 1px solid silver;
+  border-bottom: 1px solid;
+  padding-bottom: 5px;
+  font-weight: normal;
 }
 .board-wrapper {
   width: 100%;
@@ -123,4 +125,17 @@ body {
   padding: 10px;
   margin-top: 30px;
   font-size: 2em;
+}
+
+.select-game {
+  color: black !important;
+  font-weight: bold;
+}
+
+.li-leader-board {
+  border-bottom: 1px solid;
+}
+
+.name-input {
+  padding: 0 30px;
 }

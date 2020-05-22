@@ -24,12 +24,12 @@ export const LeaderBoard = () => {
   return (
     <div className="leader-board">
       <List className="list">
-        <h3>Leader Board</h3>
+        <h3>LEADER BOARD</h3>
         {leaderBoard &&
           leaderBoard.length > 0 &&
           leaderBoard.map((el) => {
             return (
-              <ListItem style={{ borderBottom: "2px dotted" }} key={el.id}>
+              <ListItem className="li-leader-board" key={el.id}>
                 {el.winner}
                 {el.date}
               </ListItem>
