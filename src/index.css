@@ -71,16 +71,16 @@ body {
   display: table;
 }
 
-.square.blue {
-  background-color: blue;
+.square.free-point {
+  background-color: #0066ff;
 }
 
-.square.green {
-  background-color: greenyellow;
+.square.user-point {
+  background-color: #66ff99;
 }
 
-.square.red {
-  background-color: red;
+.square.comp-point {
+  background-color: #ff6699;
 }
 
 .status {

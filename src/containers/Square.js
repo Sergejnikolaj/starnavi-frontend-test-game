@@ -85,11 +85,11 @@ export const Square = (props) => {
     <button
       className={`square ${
         data === randInd
-          ? "blue"
+          ? "free-point"
           : flag === true
-          ? "green"
+          ? "user-point"
           : flag === false
-          ? "red"
+          ? "comp-point"
           : ""
       }`}
       onClick={() => handleClick()}
