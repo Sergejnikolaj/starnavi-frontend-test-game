@@ -24,7 +24,7 @@ export const Square = (props) => {
   return (
     <button
       className={`square ${
-        data === randInd
+        data === randInd && flag === false
           ? "free-point"
           : isUsed === true && flag === false
           ? "comp-point"
