@@ -11,14 +11,21 @@ export const LeaderBoard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const url = "https://starnavi-frontend-test-task.herokuapp.com/winners";
-    fetch(url)
-      .then((response) => response.json())
-      .then((result) => {
-        dispatch(setLeaderBoard(result));
-      })
+    const url =
+    "https://starnavi-frontend-test-task.herokuapp.com/winners";
 
-      .catch((e) => console.log(e));
+    fetch(url)
+      .then(async (response) => {
+        const data = await response.json();
+        dispatch(setLeaderBoard(data));
+        if (!response.ok) {
+          const error = (data && data.message) || response.statusText;
+          return Promise.reject(error);
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error GET request !", error);
+      });
   }, []);
 
   return (

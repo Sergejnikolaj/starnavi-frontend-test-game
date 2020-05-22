@@ -1,84 +1,24 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  changeFieldsArray,
   increaseScore,
-  setGamesState,
-  setGameFields,
-  setLeaderBoard,
 } from "../actions/gameFields";
 import "../index.css";
 
 export const Square = (props) => {
-  const [flag, setFlag] = useState(null);
-  const [inGame, toggleInGame] = useState(true);
+  const [flag, setFlag] = useState(false);
   const randInd = useSelector((state) => state.freeFields.activeBlock);
   const gameOver = useSelector((state) => state.freeFields.gameOver);
-  const userScore = useSelector((state) => state.freeFields.userScore);
-  const compScore = useSelector((state) => state.freeFields.compScore);
-  const initLength = useSelector((state) => state.freeFields.initFieldsLength);
-  const leaderBoard = useSelector((state) => state.freeFields.leaderBoard);
-  const gamersName = useSelector((state) => state.freeFields.gamersName);
+  const usedFields = useSelector((state) => state.freeFields.usedFields);
   const dispatch = useDispatch();
 
   const { data } = props;
+  const isUsed = usedFields.includes(data);
 
   const handleClick = () => {
-    const gameScore = initLength / 2;
-    const scoreToWin = Math.floor(gameScore);
-
-    if (gameOver === false && data === randInd && inGame) {
+    if (gameOver === false && data === randInd && flag === false) {
       setFlag(true);
-
       dispatch(increaseScore("user"));
-    } else if (gameOver === false && data !== randInd && inGame) {
-      setFlag(false);
-
-      dispatch(increaseScore("comp"));
-    }
-    gameOver === false && toggleInGame(false);
-    gameOver === false && dispatch(changeFieldsArray(data));
-
-    if (userScore === scoreToWin || compScore === scoreToWin) {
-      let arr = [];
-      const nextLeaderBoard = [...leaderBoard];
-      const id = Math.random();
-      const winner = userScore === scoreToWin ? gamersName : "Computer";
-      const dateObj = new Date();
-      const hours =
-        dateObj.getHours() < 10 ? `0${dateObj.getHours()}` : dateObj.getHours();
-      const minutes =
-        dateObj.getMinutes() < 10
-          ? `0${dateObj.getMinutes()}`
-          : dateObj.getMinutes();
-      const day = dateObj.getDate();
-      const year = dateObj.getFullYear();
-      const output = ` ${hours}:${minutes}; ${day} May ${year}`;
-      const result = { id: id, winner: winner, date: output };
-      const url = "https://starnavi-frontend-test-task.herokuapp.com/winners";
-
-      nextLeaderBoard.push(result);
-
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result),
-      };
-      fetch(url, requestOptions)
-        .then(async (response) => {
-          const data = await response.json();
-          dispatch(setLeaderBoard(nextLeaderBoard));
-          if (!response.ok) {
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
-        })
-        .catch((error) => {
-          console.error("There was an error POST request!", error);
-        });
-
-      dispatch(setGameFields(arr));
-      dispatch(setGamesState(true));
     }
   };
   return (
@@ -86,15 +26,15 @@ export const Square = (props) => {
       className={`square ${
         data === randInd
           ? "free-point"
+          : isUsed === true && flag === false
+          ? "comp-point"
           : flag === true
           ? "user-point"
-          : flag === false
-          ? "comp-point"
           : ""
       }`}
       onClick={() => handleClick()}
     >
-      {data}
+      {""}
     </button>
   );
 };
