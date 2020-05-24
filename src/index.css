@@ -89,6 +89,7 @@ body {
 .square {
   background: #fff;
   border: 1px solid #999;
+  float: left;
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
@@ -136,11 +137,12 @@ body {
 }
 
 .leader-board {
-  width: 40%;
+  width: 30%;
 }
 
 .li-leader-board {
   border-bottom: 1px solid;
+  justify-content: center!important;
 }
 
 @media (max-width: 768px) {
