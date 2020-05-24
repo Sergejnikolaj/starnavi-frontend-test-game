@@ -86,6 +86,14 @@ export const Board = () => {
     setSelectVal(e.target.value);
     dispatch(setInitFields(arr));
   };
+
+  const selectOpt =
+    settings === null
+      ? settings
+      : window.innerWidth > 768
+      ? Object.keys(settings)
+      : ["easyMode"];
+
   return (
     <div className="header-wrapper">
       <div className="header">
@@ -95,8 +103,8 @@ export const Board = () => {
               {selectVal === "" && "PICK GAME MODE"}
             </InputLabel>
             <Select value={selectVal} onChange={onChangeSelect}>
-              {settings &&
-                Object.keys(settings).map((el, ind) => {
+              {selectOpt !== null &&
+                selectOpt.map((el, ind) => {
                   return (
                     <MenuItem key={ind} value={el}>
                       {el}
@@ -107,8 +115,12 @@ export const Board = () => {
           </FormControl>
         )}
         {gameOver === true && arrFields !== null && hasScores === false && (
-          <div style={{ padding: "0px 30px" }}>
-            <TextField onChange={onChangeInput} label="Enter your name" />
+          <div className="text-field-wrap">
+            <TextField
+              className="gamer-name"
+              onChange={onChangeInput}
+              label="Enter your name"
+            />
           </div>
         )}
         {gameOver === true && gamersName.length > 1 && hasScores === false && (

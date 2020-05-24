@@ -57,7 +57,7 @@ body {
 }
 
 .hard-board {
-  max-width: 750px;
+  max-width: 600px;
 }
 
 .game-mode {
@@ -82,14 +82,13 @@ body {
   background-color: #ff6699;
 }
 
-.status {
-  margin-bottom: 10px;
+.text-field-wrap {
+  padding: 0px 30px;
 }
 
 .square {
   background: #fff;
   border: 1px solid #999;
-  float: left;
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
@@ -99,6 +98,11 @@ body {
   padding: 0;
   text-align: center;
   width: 50px;
+}
+
+.hard-board-squre {
+  width: 40px;
+  height: 40px;
 }
 
 .square:focus {
@@ -131,6 +135,32 @@ body {
   font-weight: bold;
 }
 
+.leader-board {
+  width: 40%;
+}
+
 .li-leader-board {
   border-bottom: 1px solid;
+}
+
+@media (max-width: 768px) {
+  .game {
+    flex-direction: column;
+  }
+  .header-wrapper {
+    width: 100%;
+  }
+  .header {
+    flex-direction: column;
+  }
+  .text-field-wrap {
+    margin: 10px 0;
+    padding: 0px;
+  }
+  .gamer-name {
+    width: 100%;
+  }
+  .leader-board {
+    width: 100%;
+  }
 }

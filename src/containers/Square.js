@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  increaseScore,
-} from "../actions/gameFields";
+import { increaseScore } from "../actions/gameFields";
 import "../index.css";
 
 export const Square = (props) => {
@@ -10,6 +8,9 @@ export const Square = (props) => {
   const randInd = useSelector((state) => state.freeFields.activeBlock);
   const gameOver = useSelector((state) => state.freeFields.gameOver);
   const usedFields = useSelector((state) => state.freeFields.usedFields);
+  const initFieldsLength = useSelector(
+    (state) => state.freeFields.initFieldsLength
+  );
   const dispatch = useDispatch();
 
   const { data } = props;
@@ -21,9 +22,11 @@ export const Square = (props) => {
       dispatch(increaseScore("user"));
     }
   };
+  const bigScreen = initFieldsLength > 100;
+
   return (
     <button
-      className={`square ${
+      className={`square ${bigScreen === true && "hard-board-squre"} ${
         data === randInd && flag === false
           ? "free-point"
           : isUsed === true && flag === false

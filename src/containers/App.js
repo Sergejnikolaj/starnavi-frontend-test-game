@@ -7,9 +7,7 @@ export default function App() {
   return (
     <div className="game">
       <Board />
-      <div>
-        <LeaderBoard />
-      </div>
+      <LeaderBoard />
     </div>
   );
 }
