@@ -141,8 +141,9 @@ body {
 }
 
 .li-leader-board {
-  border-bottom: 1px solid;
-  justify-content: center!important;
+  background-color: #eee;
+  margin-bottom: 5px;
+  justify-content: center !important;
 }
 
 @media (max-width: 768px) {
