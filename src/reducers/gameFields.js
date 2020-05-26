@@ -36,18 +36,11 @@ export default function (state = initialState, action) {
           const winner =
             state.userScore === scoreToWin ? state.gamersName : "Computer";
           const dateObj = new Date();
-          const hours =
-            dateObj.getHours() < 10
-              ? `0${dateObj.getHours()}`
-              : dateObj.getHours();
-          const minutes =
-            dateObj.getMinutes() < 10
-              ? `0${dateObj.getMinutes()}`
-              : dateObj.getMinutes();
-          const day = dateObj.getDate();
-          const year = dateObj.getFullYear();
-          const output = ` ${hours}:${minutes}; ${day} May ${year}`;
-          const result = { id: id, winner: winner, date: output };
+          const result = {
+            id: id,
+            winner: `${winner} `,
+            date: dateObj.toLocaleString(),
+          };
           const url =
             "https://starnavi-frontend-test-task.herokuapp.com/winners";
 
